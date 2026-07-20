@@ -137,22 +137,22 @@ void * send_UDP(void *data){
     int8_t buffer[CMD_SIZE] = {0}; // buffer for sending UDP data
 
     num_cmds = (end - start)/stride + 1; // calculate number of commands to send
-    int16_t cmd_val = start; 
+    uint16_t cmd_val = start; 
     for(int i = 0; i < num_cmds; i++){
         clock_gettime(CLOCK_MONOTONIC, &prd_tmr); // get the current time for the period timer
                 
         cmd_data.timestamp = htonl((uint32_t) prd_tmr.tv_nsec/1000); // set the command timestamp to the current time in microseconds
 
         for(int i = 0; i < NUM_CHANNELS; i++){
-            cmd_data.frame[i].data = htons(cmd_val);
+            cmd_data.frame[i].data = cmd_val;
         }
-        cmd_val += stride; // increment the command value for the next iteration
 
         serialize_command(&cmd_data, buffer); // serialize the command data into a byte array for sending
 
         /* send command buffer values */
         bytes_sent = UDP_send_protocol(buffer, CMD_SIZE);
         syslog(LOG_DEBUG, "Sent %zu bytes, iter %d of %d\n", (size_t)bytes_sent,i,num_cmds);
+        printf("Sending command %d of %d: %i\n", i, num_cmds, cmd_val);
 
         // Calculate next wake-up time
         prd_tmr.tv_nsec += period; // Increment the period timer by the specified period
@@ -171,6 +171,7 @@ void * send_UDP(void *data){
             prd_tmr.tv_nsec += period;
             normalize_timespec(&prd_tmr);
         }
+        cmd_val += stride; // increment the command value for the next iteration
         syslog(LOG_INFO, "Sleep until: %ld.%09ld", prd_tmr.tv_sec, prd_tmr.tv_nsec);
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &prd_tmr, NULL);
 
