@@ -154,7 +154,7 @@ void * send_UDP(void *data){
             cmd_filtered = filter(cmd_val, coefs); // apply the selected filter to the command value
 
             for(int i = 0; i < NUM_CHANNELS; i++){
-                cmd_data.frame[i].data = htons(cmd_filtered);
+                cmd_data.frame[i].data = cmd_filtered;
             }
 
             serialize_command(&cmd_data, buffer); // serialize the command data into a byte array for sending
