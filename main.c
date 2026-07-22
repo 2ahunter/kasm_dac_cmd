@@ -143,8 +143,8 @@ void * send_UDP(void *data){
     uint8_t buffer[DAC_CMD_SIZE] = {0}; // buffer for sending UDP data
 
     num_cmds = (end - start)/stride + 1; // calculate number of commands to send
-    int16_t cmd_val = start; 
-    int16_t cmd_filtered = 0; // filtered command value
+    uint16_t cmd_val = start; 
+    uint16_t cmd_filtered = 0; // filtered command value
     for(int i = 0; i < num_cmds; i++){
         for(int j = 0; j < num_samples; j++){
             clock_gettime(CLOCK_MONOTONIC, &prd_tmr); // get the current time for the period timer         
