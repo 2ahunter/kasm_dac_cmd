@@ -94,7 +94,7 @@ int UDP_send_protocol(uint8_t * data, size_t data_len){
     ssize_t sent = 0;
 
     sent = send(UDP_fd, data, data_len, 0);
-    if (sent != data_len) {
+    if (sent != (ssize_t) data_len) {
         fprintf(stderr, "partial/failed write\n");
     }
     return(sent);

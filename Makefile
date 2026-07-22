@@ -1,4 +1,4 @@
-objects = UDP_client.o main.o
+objects = UDP_client.o main.o filter.o
 
 CFLAGS = -Wall -Wextra -pedantic -std=gnu17
 
@@ -10,10 +10,12 @@ cmd_kasm: $(objects)
 	cc -o $@ $^ $(LDLIBS)
 
 
-main.o: main.c UDP_client.o protocol.h
+main.o: main.c UDP_client.h protocol.h filter.h 
+
+filter.o: filter.c filter.h
 
 UDP_client.o: UDP_client.c UDP_client.h
 
 .PHONY : clean
 clean :
-	rm cmd_kasm $(objects)
+	rm -f cmd_kasm $(objects)
